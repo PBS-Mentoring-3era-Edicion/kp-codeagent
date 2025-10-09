@@ -1,0 +1,120 @@
+{
+  "app": {
+    "name": "KP Code Agent",
+    "tagline": "Your local AI coding assistant for learning"
+  },
+  "cli": {
+    "usage": "Usage",
+    "commands": "Commands",
+    "examples": "Examples",
+    "help": "Show this help message"
+  },
+  "commands": {
+    "setup": {
+      "name": "setup",
+      "description": "Set up Ollama and download models"
+    },
+    "check": {
+      "name": "check",
+      "description": "Check if Ollama is running"
+    },
+    "run": {
+      "description": "Execute a coding task"
+    },
+    "modify": {
+      "description": "Modify a specific file based on a task"
+    }
+  },
+  "setup": {
+    "title": "KP Code Agent Setup",
+    "checking_ollama": "Checking if Ollama is running...",
+    "ollama_running": "✓ Ollama is running",
+    "ollama_not_running": "✗ Ollama is not running!",
+    "install_instructions": "Please install and start Ollama:",
+    "download_from": "1. Download from: https://ollama.ai/download",
+    "install_and_run": "2. Install and run Ollama",
+    "run_again": "3. Run this setup command again",
+    "checking_model": "Checking if {model} is available...",
+    "model_available": "✓ Model {model} is already installed",
+    "model_not_found": "Model {model} not found. Downloading...",
+    "model_downloaded": "✓ Model {model} installed successfully",
+    "model_failed": "✗ Failed to download model {model}",
+    "setup_complete": "✓ Setup complete!",
+    "usage_instructions": "You can now use KP Code Agent:",
+    "example_usage": "kp-codeagent \"your task here\""
+  },
+  "check": {
+    "title": "Checking KP Code Agent setup...",
+    "ollama_service": "Ollama service:",
+    "running": "✓ Running",
+    "not_running": "✗ Not running",
+    "start_instructions": "Start Ollama or install from: https://ollama.ai/download",
+    "model_check": "Model {model}:",
+    "available": "✓ Available",
+    "not_found": "✗ Not found",
+    "run_setup": "Run: kp-codeagent setup --model {model}",
+    "ready": "✓ Everything is ready!"
+  },
+  "agent": {
+    "task_label": "Task:",
+    "analyzing_context": "Analyzing project context...",
+    "project_structure": "Project Structure:",
+    "found_files": "Found relevant code files",
+    "creating_plan": "📋 Creating implementation plan...",
+    "implementing": "⚙️  Implementing solution...",
+    "verifying": "🔍 Verifying solution...",
+    "verification_complete": "✓ Basic verification complete",
+    "no_file_operations": "No file operations detected in response.",
+    "manual_changes": "You may need to manually create or modify files based on the suggestions above.",
+    "success_title": "Success",
+    "success_message": "✓ Task completed successfully!\n\nFiles have been created/modified as shown above.\nReview the changes and test your code.",
+    "error_title": "Completed with Errors",
+    "error_message": "✗ Task completed with errors\n\nSome file operations failed. Check the messages above.",
+    "cancelled": "Task cancelled by user",
+    "error": "✗ Error: {error}",
+    "modifying_file": "Modifying {file_path}..."
+  },
+  "ollama": {
+    "downloading": "Downloading {model}... This may take several minutes.",
+    "download_success": "✓ Model {model} downloaded successfully!",
+    "download_failed": "✗ Failed to download model: {status}",
+    "download_error": "✗ Error downloading model: {error}",
+    "api_error": "Error: API returned status {status}",
+    "communication_error": "Error communicating with Ollama: {error}",
+    "not_running": "Ollama is not running. Please start Ollama first.",
+    "model_not_found": "Model {model} not found. Use --pull to download it.",
+    "ready": "Ready"
+  },
+  "file_handler": {
+    "backup_created": "Backup created: {path}",
+    "backup_warning": "Warning: Could not create backup: {error}",
+    "file_restored": "✓ File restored from backup",
+    "restore_failed": "✗ Failed to restore backup: {error}",
+    "changes_to": "Changes to {file_path}:",
+    "old_content": "Old content:",
+    "new_content": "New content:",
+    "content_truncated": "... (content truncated)",
+    "new_file": "New file: {file_path}",
+    "diff_error": "Could not display diff",
+    "file_exists": "File {file_path} already exists!",
+    "create_file": "Create file {file_path}?",
+    "creation_cancelled": "File creation cancelled",
+    "created": "✓ Created {file_path}",
+    "creation_failed": "✗ Failed to create file: {error}",
+    "file_not_exist": "File {file_path} does not exist!",
+    "modify_file": "Modify file {file_path}?",
+    "modification_cancelled": "File modification cancelled",
+    "modified": "✓ Modified {file_path}",
+    "modification_failed": "✗ Failed to modify file: {error}",
+    "restore_attempt": "Attempting to restore from backup...",
+    "delete_file": "Delete file {file_path}?",
+    "deletion_cancelled": "File deletion cancelled",
+    "deleted": "✓ Deleted {file_path}",
+    "deletion_failed": "✗ Failed to delete file: {error}",
+    "read_failed": "✗ Failed to read file: {error}"
+  },
+  "errors": {
+    "not_ready": "✗ {message}",
+    "cancelled_by_user": "Cancelled by user"
+  }
+}

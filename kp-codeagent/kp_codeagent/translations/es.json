@@ -1,0 +1,120 @@
+{
+  "app": {
+    "name": "KP Code Agent",
+    "tagline": "Tu asistente de código local con IA para aprender"
+  },
+  "cli": {
+    "usage": "Uso",
+    "commands": "Comandos",
+    "examples": "Ejemplos",
+    "help": "Mostrar este mensaje de ayuda"
+  },
+  "commands": {
+    "setup": {
+      "name": "setup",
+      "description": "Configurar Ollama y descargar modelos"
+    },
+    "check": {
+      "name": "check",
+      "description": "Verificar si Ollama está ejecutándose"
+    },
+    "run": {
+      "description": "Ejecutar una tarea de programación"
+    },
+    "modify": {
+      "description": "Modificar un archivo específico basado en una tarea"
+    }
+  },
+  "setup": {
+    "title": "Configuración de KP Code Agent",
+    "checking_ollama": "Verificando si Ollama está ejecutándose...",
+    "ollama_running": "✓ Ollama está ejecutándose",
+    "ollama_not_running": "✗ ¡Ollama no está ejecutándose!",
+    "install_instructions": "Por favor instala e inicia Ollama:",
+    "download_from": "1. Descarga desde: https://ollama.ai/download",
+    "install_and_run": "2. Instala y ejecuta Ollama",
+    "run_again": "3. Ejecuta este comando de configuración nuevamente",
+    "checking_model": "Verificando si {model} está disponible...",
+    "model_available": "✓ El modelo {model} ya está instalado",
+    "model_not_found": "Modelo {model} no encontrado. Descargando...",
+    "model_downloaded": "✓ Modelo {model} instalado exitosamente",
+    "model_failed": "✗ Error al descargar el modelo {model}",
+    "setup_complete": "✓ ¡Configuración completa!",
+    "usage_instructions": "Ahora puedes usar KP Code Agent:",
+    "example_usage": "kp-codeagent \"tu tarea aquí\""
+  },
+  "check": {
+    "title": "Verificando configuración de KP Code Agent...",
+    "ollama_service": "Servicio Ollama:",
+    "running": "✓ Ejecutándose",
+    "not_running": "✗ No ejecutándose",
+    "start_instructions": "Inicia Ollama o instálalo desde: https://ollama.ai/download",
+    "model_check": "Modelo {model}:",
+    "available": "✓ Disponible",
+    "not_found": "✗ No encontrado",
+    "run_setup": "Ejecuta: kp-codeagent setup --model {model}",
+    "ready": "✓ ¡Todo está listo!"
+  },
+  "agent": {
+    "task_label": "Tarea:",
+    "analyzing_context": "Analizando contexto del proyecto...",
+    "project_structure": "Estructura del Proyecto:",
+    "found_files": "Se encontraron archivos de código relevantes",
+    "creating_plan": "📋 Creando plan de implementación...",
+    "implementing": "⚙️  Implementando solución...",
+    "verifying": "🔍 Verificando solución...",
+    "verification_complete": "✓ Verificación básica completa",
+    "no_file_operations": "No se detectaron operaciones de archivo en la respuesta.",
+    "manual_changes": "Puede que necesites crear o modificar archivos manualmente basándote en las sugerencias anteriores.",
+    "success_title": "Éxito",
+    "success_message": "✓ ¡Tarea completada exitosamente!\n\nLos archivos han sido creados/modificados como se muestra arriba.\nRevisa los cambios y prueba tu código.",
+    "error_title": "Completado con Errores",
+    "error_message": "✗ Tarea completada con errores\n\nAlgunas operaciones de archivo fallaron. Revisa los mensajes anteriores.",
+    "cancelled": "Tarea cancelada por el usuario",
+    "error": "✗ Error: {error}",
+    "modifying_file": "Modificando {file_path}..."
+  },
+  "ollama": {
+    "downloading": "Descargando {model}... Esto puede tomar varios minutos.",
+    "download_success": "✓ ¡Modelo {model} descargado exitosamente!",
+    "download_failed": "✗ Error al descargar el modelo: {status}",
+    "download_error": "✗ Error al descargar el modelo: {error}",
+    "api_error": "Error: La API devolvió el estado {status}",
+    "communication_error": "Error al comunicarse con Ollama: {error}",
+    "not_running": "Ollama no está ejecutándose. Por favor inicia Ollama primero.",
+    "model_not_found": "Modelo {model} no encontrado. Usa --pull para descargarlo.",
+    "ready": "Listo"
+  },
+  "file_handler": {
+    "backup_created": "Respaldo creado: {path}",
+    "backup_warning": "Advertencia: No se pudo crear el respaldo: {error}",
+    "file_restored": "✓ Archivo restaurado desde respaldo",
+    "restore_failed": "✗ Error al restaurar respaldo: {error}",
+    "changes_to": "Cambios a {file_path}:",
+    "old_content": "Contenido antiguo:",
+    "new_content": "Contenido nuevo:",
+    "content_truncated": "... (contenido truncado)",
+    "new_file": "Archivo nuevo: {file_path}",
+    "diff_error": "No se pudo mostrar la diferencia",
+    "file_exists": "¡El archivo {file_path} ya existe!",
+    "create_file": "¿Crear archivo {file_path}?",
+    "creation_cancelled": "Creación de archivo cancelada",
+    "created": "✓ Creado {file_path}",
+    "creation_failed": "✗ Error al crear archivo: {error}",
+    "file_not_exist": "¡El archivo {file_path} no existe!",
+    "modify_file": "¿Modificar archivo {file_path}?",
+    "modification_cancelled": "Modificación de archivo cancelada",
+    "modified": "✓ Modificado {file_path}",
+    "modification_failed": "✗ Error al modificar archivo: {error}",
+    "restore_attempt": "Intentando restaurar desde respaldo...",
+    "delete_file": "¿Eliminar archivo {file_path}?",
+    "deletion_cancelled": "Eliminación de archivo cancelada",
+    "deleted": "✓ Eliminado {file_path}",
+    "deletion_failed": "✗ Error al eliminar archivo: {error}",
+    "read_failed": "✗ Error al leer archivo: {error}"
+  },
+  "errors": {
+    "not_ready": "✗ {message}",
+    "cancelled_by_user": "Cancelado por el usuario"
+  }
+}
