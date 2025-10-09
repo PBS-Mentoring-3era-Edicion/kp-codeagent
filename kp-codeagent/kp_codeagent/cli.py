@@ -16,48 +16,67 @@ console = Console()
 @click.pass_context
 @click.version_option(version="0.1.0")
 @click.option('--lang', '-l', type=click.Choice(['en', 'es']), help='Language (en/es)')
-def cli(ctx, lang):
+@click.option('--model', '-m', default='codellama:7b', help='Model to use (default: codellama:7b)')
+@click.option('--temperature', '-t', default=0.7, help='Temperature for generation (default: 0.7)')
+@click.option('--verbose', '-v', is_flag=True, help='Enable verbose output')
+def cli(ctx, lang, model, temperature, verbose):
     """KP Code Agent - Your local AI coding assistant for learning.
 
     KP Code Agent - Tu asistente de código local con IA para aprender.
+
+    Usage:
+      kp-codeagent run "your task"
+      kp-codeagent --lang es run "tu tarea"
+      kp-codeagent setup
+      kp-codeagent check
     """
     # Set language if provided
     if lang:
         os.environ['KP_LANG'] = lang
 
-    i18n = get_i18n(lang)
+    # Store options in context for subcommands
+    ctx.ensure_object(dict)
+    ctx.obj['lang'] = lang
+    ctx.obj['model'] = model
+    ctx.obj['temperature'] = temperature
+    ctx.obj['verbose'] = verbose
 
     if ctx.invoked_subcommand is None:
+        i18n = get_i18n(lang)
         console.print(f"[bold cyan]{i18n.t('app.name')}[/bold cyan] - {i18n.t('app.tagline')}")
         console.print(f"\n{i18n.t('cli.usage')}:")
-        console.print("  kp-codeagent <task>          - Execute a coding task / Ejecutar tarea")
+        console.print("  kp-codeagent run \"task\"      - Execute a coding task / Ejecutar tarea")
         console.print("  kp-codeagent --help          - Show help / Mostrar ayuda")
         console.print(f"\n{i18n.t('cli.commands')}:")
+        console.print(f"  run \"task\"                  - Execute task / Ejecutar tarea")
         console.print(f"  setup                        - {i18n.t('commands.setup.description')}")
         console.print(f"  check                        - {i18n.t('commands.check.description')}")
         console.print(f"\n{i18n.t('cli.examples')}:")
         if i18n.lang == 'es':
-            console.print('  kp-codeagent --lang es "crea una función Python para calcular fibonacci"')
-            console.print('  kp-codeagent --lang es "agrega manejo de errores a main.py"')
+            console.print('  kp-codeagent --lang es run "crea una función Python para calcular fibonacci"')
+            console.print('  kp-codeagent --lang es run "agrega manejo de errores a main.py"')
         else:
-            console.print('  kp-codeagent "create a Python function to calculate fibonacci"')
-            console.print('  kp-codeagent "add error handling to main.py"')
+            console.print('  kp-codeagent run "create a Python function to calculate fibonacci"')
+            console.print('  kp-codeagent run "add error handling to main.py"')
 
 
 @cli.command()
-@click.argument('task', required=True)
-@click.option('--model', '-m', default='codellama:7b', help='Model to use (default: codellama:7b)')
-@click.option('--temperature', '-t', default=0.7, help='Temperature for generation (default: 0.7)')
-@click.option('--verbose', '-v', is_flag=True, help='Enable verbose output')
-@click.option('--force', '-f', is_flag=True, help='Skip confirmations (use with caution)')
-@click.option('--lang', '-l', type=click.Choice(['en', 'es']), help='Language (en/es)')
-def run(task: str, model: str, temperature: float, verbose: bool, force: bool, lang: str):
+@click.argument('task', nargs=-1, required=True)
+@click.pass_context
+def run(ctx, task):
     """Execute a coding task."""
+    task_str = ' '.join(task)
+    lang = ctx.obj.get('lang')
+    model = ctx.obj.get('model', 'codellama:7b')
+    temperature = ctx.obj.get('temperature', 0.7)
+    verbose = ctx.obj.get('verbose', False)
+
     if lang:
         os.environ['KP_LANG'] = lang
+
     agent = CodeAgent(model=model, temperature=temperature, verbose=verbose, lang=lang)
-    success = agent.run(task)
-    exit(0 if success else 1)
+    success = agent.run(task_str)
+    ctx.exit(0 if success else 1)
 
 
 @cli.command()
