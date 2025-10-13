@@ -80,7 +80,7 @@ class CodeAgent:
         plan = ""
         for chunk in self.client.generate(
             prompt=plan_prompt,
-            system=SYSTEM_PROMPT,
+            system=self.system_prompt,
             temperature=self.temperature
         ):
             console.print(chunk, end="")
@@ -104,7 +104,7 @@ class CodeAgent:
         implementation = ""
         for chunk in self.client.generate(
             prompt=task_prompt,
-            system=SYSTEM_PROMPT,
+            system=self.system_prompt,
             temperature=self.temperature
         ):
             console.print(chunk, end="")
@@ -235,7 +235,7 @@ class CodeAgent:
         new_content = ""
         for chunk in self.client.generate(
             prompt=prompt,
-            system=SYSTEM_PROMPT,
+            system=self.system_prompt,
             temperature=self.temperature
         ):
             console.print(chunk, end="")
