@@ -32,47 +32,155 @@ The AI will respond in your selected language and provide educational explanatio
 - **Disk Space**: ~6GB for installation and model
 - **Ollama**: Local LLM runtime (auto-installed by setup script)
 
+**Note for WSL Users**: Ollama may run 2-3x slower in WSL. Consider:
+- Installing Ollama natively in Windows
+- Using smaller models (`tinyllama` or `phi:latest`)
+- Using the included demo mode for development/testing
+
+## ⚡ NEW: Ultra-Fast Cloud Backend (Groq) - **RECOMMENDED for WSL**
+
+**WSL Users**: If Ollama is slow (>30s), use **Groq** instead - it's **20x faster** and **100% FREE**!
+
+```bash
+# 1. Install Groq support
+pip install groq
+
+# 2. Get FREE API key from https://console.groq.com/keys
+
+# 3. Configure
+export GROQ_API_KEY="gsk_your_key_here"
+
+# 4. Use it (0.7-2 seconds vs 30-90s with Ollama!)
+kp-codeagent --backend groq run "create fibonacci function"
+```
+
+**Why Groq?**
+- ⚡ **20x faster** than Ollama in WSL (0.7s vs 47s)
+- 🆓 **100% FREE** (30 requests/min, 14,400/day)
+- 💾 **0 RAM usage** (runs in cloud)
+- 🎯 **Better code quality** (Llama 3.3 70B model)
+- ✅ **Works perfectly in WSL**
+
+📖 **Full guide**: See `GUIA_GROQ.md` | **Guía en español**: `GUIA_GROQ.md`
+
+---
+
 ## 🚀 Quick Start
 
-### Installation (5 minutes)
+### Installation - Choose Your Backend
 
-#### Windows
+#### ⚡ Option 1: Groq (Recommended - Fast & Easy)
+
+**Best for**: WSL, low-RAM systems, quick setup
+
 ```bash
-# Download the repository
+# 1. Download the repository
 git clone https://github.com/kp-codeagent/kp-codeagent.git
-cd kp-codeagent
+cd kp-codeagent/kp-codeagent
 
-# Run installer
-installer\install.bat
-```
-
-#### Linux / macOS / WSL
-```bash
-# Download the repository
-git clone https://github.com/kp-codeagent/kp-codeagent.git
-cd kp-codeagent
-
-# Run installer
-chmod +x installer/install.sh
-./installer/install.sh
-```
-
-#### Manual Installation
-```bash
-# Install Python dependencies
+# 2. Install dependencies
 pip install -r requirements.txt
 
-# Install and start Ollama
-# Visit: https://ollama.ai/download
+# 3. Install KP Code Agent
+pip install -e .
 
-# Download CodeLlama model
+# 4. Get FREE Groq API key from https://console.groq.com/keys
+
+# 5. Configure
+export GROQ_API_KEY="gsk_your_key_here"
+
+# 6. You're ready! Test it:
+kp-codeagent --backend groq run "create a hello world function"
+```
+
+**Setup time**: ~2 minutes
+**First response**: 0.7-2 seconds ⚡
+
+---
+
+#### 🔒 Option 2: Ollama (Local & Private)
+
+**Best for**: Privacy-focused users, no internet after setup
+
+```bash
+# 1. Download the repository
+git clone https://github.com/kp-codeagent/kp-codeagent.git
+cd kp-codeagent
+
+# 2. Run installer
+# Windows:
+installer\install.bat
+
+# Linux/macOS/WSL:
+chmod +x installer/install.sh
+./installer/install.sh
+
+# 3. Or manual installation:
+pip install -r requirements.txt
+# Install Ollama from https://ollama.ai/download
 ollama pull codellama:7b
-
-# Install KP Code Agent
 pip install -e .
 ```
 
+**Setup time**: ~5-10 minutes
+**First response**: 10-60 seconds (faster after first load)
+
 ### First Use
+
+#### ⚡ With Groq (Recommended)
+
+1. **Set your API key**:
+   ```bash
+   export GROQ_API_KEY="gsk_your_key_here"
+
+   # Make it permanent (optional):
+   echo 'export GROQ_API_KEY="gsk_your_key"' >> ~/.bashrc
+   source ~/.bashrc
+   ```
+
+2. **Test it works**:
+   ```bash
+   python3 test_groq.py
+   ```
+
+   Expected: ✅ Response in ~0.7 seconds
+
+3. **Run your first task**:
+   ```bash
+   kp-codeagent --backend groq run "create a Python function to calculate fibonacci numbers"
+   ```
+
+4. **Review and confirm** the changes when prompted
+
+**Performance**:
+- ⚡ First response: 0.7-2 seconds
+- 🆓 Completely FREE (30 req/min, 14,400/day)
+- 💾 0 RAM usage on your machine
+
+---
+
+#### 🔒 With Ollama (Alternative)
+
+##### For Windows Users (PowerShell):
+
+1. **Verify Ollama is installed and running**:
+   ```powershell
+   ollama --version
+   ollama list
+   ```
+
+2. **Download a model** (if not already done):
+   ```powershell
+   ollama pull codellama:7b
+   ```
+
+3. **Run kp-codeagent**:
+   ```powershell
+   kp-codeagent check
+   kp-codeagent run "create a Python function to calculate fibonacci numbers"
+   ```
+
+##### For Linux/macOS/WSL Users:
 
 1. **Check if everything is ready**:
    ```bash
@@ -81,59 +189,86 @@ pip install -e .
 
 2. **Run your first task**:
    ```bash
-   kp-codeagent "create a Python function to calculate fibonacci numbers"
+   kp-codeagent run "create a Python function to calculate fibonacci numbers"
    ```
 
-3. **Review and confirm the changes** when prompted
+**Performance**:
+- ⏱️ First run may take 20-60 seconds while model loads into memory
+- 🪟 Windows users: Run Ollama **natively in Windows**, not in WSL for best performance
+- 📖 See `GUIA_INSTALACION_OLLAMA_WINDOWS.md` for detailed Windows setup
+
+---
+
+💡 **Tip**: If Ollama is slow in WSL, switch to Groq for 20x faster performance!
 
 ## 📖 Usage
 
 ### Basic Command
 ```bash
-kp-codeagent "your task description here"
+kp-codeagent run "your task description here"
 ```
 
 ### Examples
 
 **Create new code**:
 ```bash
-kp-codeagent "create a Python function that validates email addresses"
+kp-codeagent run "create a Python function that validates email addresses"
 ```
 
 **Modify existing code**:
 ```bash
-kp-codeagent "add error handling to the login function in auth.py"
+kp-codeagent run "add error handling to the login function in auth.py"
 ```
 
 **Fix bugs**:
 ```bash
-kp-codeagent "fix the null pointer error in main.java"
+kp-codeagent run "fix the null pointer error in main.java"
 ```
 
 **Add features**:
 ```bash
-kp-codeagent "add a dark mode toggle to the settings page"
+kp-codeagent run "add a dark mode toggle to the settings page"
 ```
 
 **Refactor code**:
 ```bash
-kp-codeagent "refactor the database connection code to use connection pooling"
+kp-codeagent run "refactor the database connection code to use connection pooling"
 ```
 
 ### Advanced Options
 
 ```bash
-# Use a different model
-kp-codeagent --model codellama:13b "your task"
+# 🌟 RECOMMENDED: Use Groq backend (fast, cloud-based, FREE)
+kp-codeagent --backend groq run "your task"
+
+# Use different Groq models
+kp-codeagent --backend groq --model llama-3.3-70b-versatile run "task"     # Default
+kp-codeagent --backend groq --model llama-3.1-8b-instant run "quick task"  # Faster
+kp-codeagent --backend groq --model openai/gpt-oss-120b run "complex"      # Most powerful
+
+# Use OpenAI backend (best quality, paid)
+kp-codeagent --backend openai --api-key sk-... run "your task"
+
+# Use Ollama backend (local, private)
+kp-codeagent --backend ollama --model codellama:13b run "your task"
+
+# Auto-detect best available backend (tries Groq → OpenAI → Ollama)
+kp-codeagent --backend auto run "your task"
 
 # Adjust creativity (0.0 = focused, 1.0 = creative)
-kp-codeagent --temperature 0.3 "your task"
+kp-codeagent --temperature 0.3 run "your task"
 
 # Enable verbose mode for debugging
-kp-codeagent --verbose "your task"
+kp-codeagent --verbose run "your task"
+
+# Use Spanish language
+kp-codeagent --lang es run "tu tarea"
+
+# Combine Groq with Spanish
+kp-codeagent --backend groq --lang es run "crea función factorial"
 
 # Modify a specific file
-kp-codeagent modify path/to/file.py "add input validation"
+kp-codeagent --backend groq modify path/to/file.py "add input validation"
 ```
 
 ### Available Commands
@@ -212,10 +347,24 @@ kp-codeagent --temperature 0.3 "fix syntax error in main.py"
 
 ## 🐛 Troubleshooting
 
+### Quick Diagnostics
+
+Run the diagnostic script to check your setup:
+```bash
+# Test if Ollama is working correctly
+python3 test_ollama.py
+
+# Or run detailed diagnostics
+bash test_ollama_detallado.sh
+```
+
 ### Ollama Not Running
 ```bash
 # Check Ollama status
-curl http://localhost:11434
+curl http://localhost:11434/api/version
+
+# Check if process is running
+ps aux | grep ollama
 
 # Start Ollama (Linux/macOS)
 ollama serve
@@ -224,6 +373,40 @@ ollama serve
 # Run Ollama from Start Menu
 ```
 
+### Ollama Timeout / Very Slow Responses
+
+**Symptoms**: Commands hang, timeouts after 30-60 seconds
+
+**Common Causes**:
+1. **Model not loaded in memory** - First request loads model (20-40s)
+2. **WSL performance issues** - Ollama runs slower in WSL
+3. **CPU/RAM limitations** - System lacks resources
+
+**Solutions**:
+
+```bash
+# 1. Check if model is loaded
+curl http://localhost:11434/api/ps
+
+# 2. Try smaller/faster model
+ollama pull tinyllama
+kp-codeagent --model tinyllama run "test task"
+
+# 3. Pre-load model in memory (wait 30-40s)
+ollama run phi:latest "hello"
+
+# 4. Restart Ollama
+sudo systemctl restart ollama  # or pkill ollama && ollama serve
+
+# 5. Use demo mode (no AI required)
+python3 demo_sin_ia.py
+```
+
+**WSL-Specific Issues**:
+- Ollama can be 2-3x slower in WSL compared to native Windows/Linux
+- Consider installing Ollama in Windows and connecting from WSL
+- Or use the demo mode for development/testing
+
 ### Model Not Found
 ```bash
 # Download the model
@@ -231,14 +414,18 @@ ollama pull codellama:7b
 
 # Verify it's available
 ollama list
+
+# Check model is accessible
+ollama run codellama:7b "test"
 ```
 
 ### Python Not Found
 ```bash
 # Verify Python installation
-python --version  # or python3 --version
+python3 --version  # Should show Python 3.10+
 
-# Should show Python 3.10+
+# If not found, install
+sudo apt install python3 python3-pip  # Debian/Ubuntu
 ```
 
 ### Permission Errors
@@ -247,6 +434,9 @@ python --version  # or python3 --version
 sudo pip install -r requirements.txt
 
 # Windows: Run terminal as Administrator
+
+# Or install in user space
+pip install --user -r requirements.txt
 ```
 
 ### Installation Issues
@@ -254,15 +444,30 @@ sudo pip install -r requirements.txt
 # Clear pip cache
 pip cache purge
 
-# Reinstall
+# Reinstall dependencies
 pip install -r requirements.txt --force-reinstall
+
+# Check Python version
+python3 --version  # Must be 3.10+
 ```
+
+### Response Times by Model
+
+Expected response times for simple queries:
+
+| Model | First Load | Subsequent | RAM Usage |
+|-------|-----------|------------|-----------|
+| tinyllama | 15-25s | 3-8s | 1-2 GB |
+| phi:latest | 20-40s | 5-15s | 2-3 GB |
+| codellama:7b | 30-60s | 10-30s | 4-6 GB |
+
+**Note**: WSL may be 2-3x slower. First request loads model into memory.
 
 ## 📚 Project Structure
 
 ```
 kp-codeagent/
-├── src/
+├── kp_codeagent/             # Main package
 │   ├── __init__.py           # Package initialization
 │   ├── cli.py                # Command-line interface
 │   ├── agent.py              # Core agent logic
@@ -270,13 +475,19 @@ kp-codeagent/
 │   ├── file_handler.py       # Safe file operations
 │   ├── context_builder.py    # Project context analysis
 │   ├── prompts.py            # System prompts
-│   └── utils.py              # Utility functions
-├── installer/
-│   ├── install.bat           # Windows installer
-│   └── install.sh            # Linux/macOS installer
+│   ├── i18n.py               # Internationalization
+│   ├── utils.py              # Utility functions
+│   └── translations/         # Language files
+│       ├── en.json           # English translations
+│       └── es.json           # Spanish translations
 ├── tests/                    # Test suite
-├── pyproject.toml            # Project configuration
+│   └── test_basic.py         # Basic tests
+├── setup.py                  # Setup configuration
 ├── requirements.txt          # Python dependencies
+├── test_ollama.py            # Quick Ollama diagnostics
+├── test_ollama_detallado.sh  # Detailed bash diagnostics
+├── demo_sin_ia.py            # Demo mode (no AI needed)
+├── diagnostico_ollama.md     # Troubleshooting guide
 └── README.md                 # This file
 ```
 

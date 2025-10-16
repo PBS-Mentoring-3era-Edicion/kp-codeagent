@@ -71,7 +71,8 @@ class OllamaClient:
         prompt: str,
         system: Optional[str] = None,
         temperature: float = 0.7,
-        stream: bool = True
+        stream: bool = True,
+        timeout: int = 120
     ) -> Iterator[str]:
         """Generate text from the model with streaming support."""
 
@@ -86,11 +87,13 @@ class OllamaClient:
             payload["system"] = system
 
         try:
+            console.print(f"[dim]🔄 Conectando con {self.model}...[/dim]")
+
             response = requests.post(
                 f"{self.base_url}/api/generate",
                 json=payload,
                 stream=stream,
-                timeout=300
+                timeout=timeout
             )
 
             if response.status_code != 200:
@@ -98,19 +101,28 @@ class OllamaClient:
                 return
 
             if stream:
+                line_count = 0
                 for line in response.iter_lines():
                     if line:
                         data = json.loads(line)
                         if 'response' in data:
+                            if line_count == 0:
+                                console.print("[green]✓ Recibiendo respuesta...[/green]")
                             yield data['response']
+                            line_count += 1
                         if data.get('done', False):
                             break
             else:
                 data = response.json()
                 yield data.get('response', '')
 
+        except requests.exceptions.Timeout:
+            yield f"\n\n[red]✗ Timeout: El modelo tardó más de {timeout} segundos. Intenta:[/red]\n"
+            yield "1. Reiniciar Ollama: ollama serve\n"
+            yield "2. Usar un modelo más pequeño: --model phi:latest\n"
+            yield "3. Reducir el tamaño del contexto\n"
         except requests.exceptions.RequestException as e:
-            yield f"Error communicating with Ollama: {e}"
+            yield f"\n[red]✗ Error comunicando con Ollama: {e}[/red]"
 
     def generate_full(
         self,

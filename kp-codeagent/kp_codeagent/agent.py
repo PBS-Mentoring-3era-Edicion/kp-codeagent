@@ -7,6 +7,7 @@ from rich.panel import Panel
 from rich.markdown import Markdown
 
 from .ollama_client import OllamaClient
+from .llm_client import UnifiedLLMClient
 from .context_builder import ContextBuilder
 from .file_handler import FileHandler
 from .prompts import (
@@ -16,6 +17,7 @@ from .prompts import (
     FILE_MODIFICATION_TEMPLATE
 )
 from .i18n import get_i18n
+import os
 
 console = Console()
 
@@ -25,12 +27,23 @@ class CodeAgent:
 
     def __init__(
         self,
-        model: str = "codellama:7b",
+        backend: str = None,
+        model: str = None,
         temperature: float = 0.7,
         verbose: bool = False,
-        lang: str = None
+        lang: str = None,
+        api_key: str = None
     ):
-        self.client = OllamaClient(model=model)
+        # Determinar backend a usar
+        backend = backend or os.getenv("KP_BACKEND", "auto")
+
+        # Usar cliente unificado que soporta múltiples backends
+        self.client = UnifiedLLMClient(
+            backend=backend,
+            model=model,
+            api_key=api_key or os.getenv("GROQ_API_KEY") or os.getenv("OPENAI_API_KEY")
+        )
+
         self.context_builder = ContextBuilder()
         self.file_handler = FileHandler()
         self.temperature = temperature
@@ -70,7 +83,8 @@ class CodeAgent:
 
     def plan_solution(self, task: str, context: Dict[str, str]) -> str:
         """Ask CodeLlama to create a step-by-step plan."""
-        console.print("\n[bold yellow]📋 Creating implementation plan...[/bold yellow]\n")
+        console.print("\n[bold yellow]📋 Creando plan de implementación...[/bold yellow]")
+        console.print("[dim]⏳ Esperando respuesta del modelo IA (esto puede tardar 10-30 segundos)...[/dim]\n")
 
         plan_prompt = PLAN_PROMPT_TEMPLATE.format(
             user_task=task,
@@ -81,7 +95,8 @@ class CodeAgent:
         for chunk in self.client.generate(
             prompt=plan_prompt,
             system=self.system_prompt,
-            temperature=self.temperature
+            temperature=self.temperature,
+            timeout=90
         ):
             console.print(chunk, end="")
             plan += chunk
@@ -91,7 +106,8 @@ class CodeAgent:
 
     def execute_plan(self, task: str, context: Dict[str, str], plan: str) -> bool:
         """Implement the plan by generating code."""
-        console.print("\n[bold green]⚙️  Implementing solution...[/bold green]\n")
+        console.print("\n[bold green]⚙️  Implementando solución...[/bold green]")
+        console.print("[dim]⏳ Generando código (esto puede tardar 15-45 segundos)...[/dim]\n")
 
         # Generate the full task prompt
         task_prompt = TASK_PROMPT_TEMPLATE.format(
@@ -105,7 +121,8 @@ class CodeAgent:
         for chunk in self.client.generate(
             prompt=task_prompt,
             system=self.system_prompt,
-            temperature=self.temperature
+            temperature=self.temperature,
+            timeout=120
         ):
             console.print(chunk, end="")
             implementation += chunk

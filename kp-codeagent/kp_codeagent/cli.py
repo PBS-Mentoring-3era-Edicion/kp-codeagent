@@ -16,16 +16,19 @@ console = Console()
 @click.pass_context
 @click.version_option(version="0.1.0")
 @click.option('--lang', '-l', type=click.Choice(['en', 'es']), help='Language (en/es)')
-@click.option('--model', '-m', default='codellama:7b', help='Model to use (default: codellama:7b)')
+@click.option('--backend', '-b', type=click.Choice(['auto', 'groq', 'openai', 'ollama']), default='auto', help='LLM backend to use (default: auto)')
+@click.option('--model', '-m', default=None, help='Model to use (backend-specific)')
+@click.option('--api-key', help='API key for cloud backends (Groq/OpenAI)')
 @click.option('--temperature', '-t', default=0.7, help='Temperature for generation (default: 0.7)')
 @click.option('--verbose', '-v', is_flag=True, help='Enable verbose output')
-def cli(ctx, lang, model, temperature, verbose):
+def cli(ctx, lang, backend, model, api_key, temperature, verbose):
     """KP Code Agent - Your local AI coding assistant for learning.
 
     KP Code Agent - Tu asistente de código local con IA para aprender.
 
     Usage:
       kp-codeagent run "your task"
+      kp-codeagent --backend groq run "your task"
       kp-codeagent --lang es run "tu tarea"
       kp-codeagent setup
       kp-codeagent check
@@ -37,7 +40,9 @@ def cli(ctx, lang, model, temperature, verbose):
     # Store options in context for subcommands
     ctx.ensure_object(dict)
     ctx.obj['lang'] = lang
+    ctx.obj['backend'] = backend
     ctx.obj['model'] = model
+    ctx.obj['api_key'] = api_key
     ctx.obj['temperature'] = temperature
     ctx.obj['verbose'] = verbose
 
@@ -67,14 +72,23 @@ def run(ctx, task):
     """Execute a coding task."""
     task_str = ' '.join(task)
     lang = ctx.obj.get('lang')
-    model = ctx.obj.get('model', 'codellama:7b')
+    backend = ctx.obj.get('backend', 'auto')
+    model = ctx.obj.get('model')
+    api_key = ctx.obj.get('api_key')
     temperature = ctx.obj.get('temperature', 0.7)
     verbose = ctx.obj.get('verbose', False)
 
     if lang:
         os.environ['KP_LANG'] = lang
 
-    agent = CodeAgent(model=model, temperature=temperature, verbose=verbose, lang=lang)
+    agent = CodeAgent(
+        backend=backend,
+        model=model,
+        api_key=api_key,
+        temperature=temperature,
+        verbose=verbose,
+        lang=lang
+    )
     success = agent.run(task_str)
     ctx.exit(0 if success else 1)
 
